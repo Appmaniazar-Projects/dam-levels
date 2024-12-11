@@ -1,0 +1,15 @@
+2024-12-11 11:21:34,099 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.105:5000
+2024-12-11 11:21:34,102 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-11 11:22:20,241 - INFO - 127.0.0.1 - - [11/Dec/2024 11:22:20] "GET / HTTP/1.1" 200 -
+2024-12-11 11:22:26,029 - INFO - 127.0.0.1 - - [11/Dec/2024 11:22:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-12-11 11:23:40,394 - INFO - 192.168.100.105 - - [11/Dec/2024 11:23:40] "GET / HTTP/1.1" 200 -
+2024-12-11 11:23:46,442 - INFO - 192.168.100.105 - - [11/Dec/2024 11:23:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-12-11 11:52:06,865 - INFO - 192.168.100.105 - - [11/Dec/2024 11:52:06] "GET / HTTP/1.1" 200 -
+2024-12-11 11:56:40,194 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.105:5000
+2024-12-11 11:56:40,196 - INFO - [33mPress CTRL+C to quit[0m
