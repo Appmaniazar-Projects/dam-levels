@@ -13,3 +13,9 @@
  * Running on http://127.0.0.1:5000
  * Running on http://192.168.100.105:5000
 2024-12-11 11:56:40,196 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-11 15:00:58,592 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.105:5000
+2024-12-11 15:00:58,594 - INFO - [33mPress CTRL+C to quit[0m
+2024-12-11 15:01:21,300 - INFO - 192.168.100.105 - - [11/Dec/2024 15:01:21] "GET / HTTP/1.1" 200 -

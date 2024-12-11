@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: dam-levels
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    
+  - type: cron
+    name: dam-levels-scraper
+    schedule: "0 0 */14 * 3"  # At 00:00 on every 14th day-of-month and on Wednesday
+    command: "curl -X POST https://dam-levels.onrender.com/webhook" 

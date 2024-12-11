@@ -60,7 +60,7 @@ def scrape_dam_levels():
 
         # Dictionary to store DataFrames for each region
         region_data = {}
-
+        
         for abbreviation, name in regions.items():
             logger.info(f"Processing region: {name}")
             url = f"https://www.dws.gov.za/Hydrology/Weekly/ProvinceWeek.aspx?region={abbreviation}"
@@ -91,7 +91,7 @@ def scrape_dam_levels():
 
             except Exception as e:
                 logger.error(f"Error scraping {name}: {str(e)}")
-
+            
         if not region_data:
             logger.warning("No data collected for any regions")
             return False
@@ -104,14 +104,28 @@ def scrape_dam_levels():
         os.makedirs('outputs', exist_ok=True)
         full_path = os.path.join('outputs', output_filename)
 
+        # Validate path is writable
+        if not os.access(os.path.dirname(full_path), os.W_OK):
+            logger.error(f"Output directory is not writable: {os.path.dirname(full_path)}")
+            return False
+
         with pd.ExcelWriter(full_path, engine='xlsxwriter') as writer:
             averages = []
 
             for region_name, df in region_data.items():
-                # Convert to numeric values
-                df['This Week'] = pd.to_numeric(df['This Week'].str.replace('#', ''), errors='coerce')
-                df['Last Week'] = pd.to_numeric(df['Last Week'].str.replace('#', ''), errors='coerce')
-                df['Last Year'] = pd.to_numeric(df['Last Year'].str.replace('#', ''), errors='coerce')
+                # Validate DataFrame
+                if df.empty:
+                    logger.warning(f"Empty DataFrame for region: {region_name}")
+                    continue
+
+                # Convert to numeric values with error handling
+                try:
+                    df['This Week'] = pd.to_numeric(df['This Week'].str.replace('#', ''), errors='coerce')
+                    df['Last Week'] = pd.to_numeric(df['Last Week'].str.replace('#', ''), errors='coerce')
+                    df['Last Year'] = pd.to_numeric(df['Last Year'].str.replace('#', ''), errors='coerce')
+                except Exception as e:
+                    logger.error(f"Error converting data for region {region_name}: {str(e)}")
+                    continue
 
                 # Calculate averages
                 this_week_avg = df['This Week'].mean()
@@ -119,18 +133,22 @@ def scrape_dam_levels():
                 last_year_avg = df['Last Year'].mean()
 
                 averages.append([region_name, this_week_avg, last_week_avg, last_year_avg])
-                df.to_excel(writer, sheet_name=region_name.replace(' ', '_'), index=False)
+                
+                # Write sheet with sanitized name
+                sheet_name = region_name.replace(' ', '_')[:31]  # Excel sheet names limited to 31 chars
+                df.to_excel(writer, sheet_name=sheet_name, index=False)
 
             # Create master sheet with averages
-            averages_df = pd.DataFrame(averages, columns=['Region', 'This Week Avg', 'Last Week Avg', 'Last Year Avg'])
-            averages_df[['This Week Avg', 'Last Week Avg', 'Last Year Avg']] = averages_df[['This Week Avg', 'Last Week Avg', 'Last Year Avg']].round(1)
-            averages_df.to_excel(writer, sheet_name='Master', index=False)
+            if averages:
+                averages_df = pd.DataFrame(averages, columns=['Region', 'This Week Avg', 'Last Week Avg', 'Last Year Avg'])
+                averages_df[['This Week Avg', 'Last Week Avg', 'Last Year Avg']] = averages_df[['This Week Avg', 'Last Week Avg', 'Last Year Avg']].round(1)
+                averages_df.to_excel(writer, sheet_name='Master', index=False)
 
-        logger.info(f"Data saved to {full_path}")
+        logger.info(f"Successfully created Excel file: {full_path}")
         return True
-
+        
     except Exception as e:
-        logger.error(f"Scraping process failed: {str(e)}")
+        logger.error(f"Error in scrape_dam_levels: {str(e)}")
         return False
 
 @app.route('/')
